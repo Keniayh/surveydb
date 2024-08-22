@@ -1,8 +1,7 @@
 package com.surveydb.Chapter.infrastructure.controller;
 
 import java.sql.Timestamp;
-import java.util.Scanner;
-
+import javax.swing.JOptionPane;
 
 import com.surveydb.Chapter.application.CreateChapterUseCase;
 import com.surveydb.Chapter.domain.entity.Chapter;
@@ -19,18 +18,16 @@ public class ChapterController {
     }
 
     public void addChapter() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Enter the Enter chapter number: ");
-            String chapterNumber = scanner.nextLine();
+        try {
+            // Solicitar entrada del usuario mediante JOptionPane
+            String chapterNumber = JOptionPane.showInputDialog("Enter chapter number:");
+            String chapterTitle = JOptionPane.showInputDialog("Enter chapter title:");
+            String surveyIdStr = JOptionPane.showInputDialog("Enter survey ID:");
 
-            System.out.println("Enter chapter title: ");
-            String chapterTitle = scanner.nextLine();
+            // Validar que la entrada para surveyId sea un número
+            int surveyId = Integer.parseInt(surveyIdStr);
 
-            System.out.println("Enter survey ID: ");
-            int surveyId = Integer.parseInt(scanner.nextLine());
-
-            // crea instacia chapter y establece valores
-            
+            // Crear instancia de Chapter y establecer valores
             Chapter chapter = new Chapter();
             chapter.setCreated_at(new Timestamp(System.currentTimeMillis()));
             chapter.setUpdated_at(new Timestamp(System.currentTimeMillis()));
@@ -38,12 +35,15 @@ public class ChapterController {
             chapter.setChapter_number(chapterNumber);
             chapter.setChapter_title(chapterTitle);
 
+            // Ejecutar caso de uso para crear el capítulo
             createChapterUseCase.execute(chapter);
 
-            
-        }
+            JOptionPane.showMessageDialog(null, "Chapter created successfully!");
 
-        System.out.println("Chapter created successfully!");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid input for survey ID. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-    
 }
