@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.sql.Statement; 
 
 import com.surveydb.Chapter.domain.entity.Chapter;
 import com.surveydb.Chapter.domain.service.ChapterService;
@@ -21,8 +22,9 @@ public class ChapterRepository implements ChapterService{
             String user = props.getProperty("user");
             String password = props.getProperty("password");
             connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Se conectó :p");
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -30,25 +32,28 @@ public class ChapterRepository implements ChapterService{
     @Override
     public void createChapter(Chapter chapter) {
         String sql = "INSERT INTO chapter (created_at, survey_id, update_at, chapter_number, chapter_title) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql,
-                    PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setTimestamp(1, chapter.getCreated_at());
             statement.setInt(2, chapter.getSurvey_id());
             statement.setTimestamp(3, chapter.getUpdated_at());
             statement.setString(4, chapter.getChapter_number());
             statement.setString(5, chapter.getChapter_title());
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    chapter.setId(generatedKeys.getInt(1));
+    
+            int affectedRows = statement.executeUpdate();
+    
+            // Verifica si se insertó la fila y recupera la clave generada
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        chapter.setId(generatedKeys.getInt(1));  // Asigna el ID generado al objeto Chapter
+                    }
                 }
             }
-            connection.close();
-          
+            
+            System.out.println("Chapter created successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
-        } 
-        
+        }
     }
-
+    
 }
