@@ -6,8 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.sql.Statement; 
+import java.sql.Statement;
 
+import com.mysql.cj.xdevapi.PreparableStatement;
 import com.surveydb.Chapter.domain.entity.Chapter;
 import com.surveydb.Chapter.domain.service.ChapterService;
 
@@ -54,6 +55,30 @@ public class ChapterRepository implements ChapterService{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Optional<Chapter> findChapterById(int id) {
+        String query = "SELECT  id, chapter_number, chapter_title, created_at, update_at, survey_id FROM chapter WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Chapter chapter = new Chapter(
+                        resultSet.getInt("id"),
+                        resultSet.getString("chapter_number"),
+                        resultSet.getString("chapter_title"),
+                        resultSet.getTimestamp("created_at"),
+                        resultSet.getTimestamp("update_at"),
+                        resultSet.getInt("survey_id")
+                    );
+                    return Optional.of(chapter);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
     
 }

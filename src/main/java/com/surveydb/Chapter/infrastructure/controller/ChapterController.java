@@ -2,8 +2,8 @@ package com.surveydb.Chapter.infrastructure.controller;
 
 import java.sql.Timestamp;
 import javax.swing.JOptionPane;
-
 import com.surveydb.Chapter.application.CreateChapterUseCase;
+import com.surveydb.Chapter.application.FindChapterUseCase;
 import com.surveydb.Chapter.domain.entity.Chapter;
 import com.surveydb.Chapter.domain.service.ChapterService;
 import com.surveydb.Chapter.infrastructure.repository.ChapterRepository;
@@ -46,4 +46,53 @@ public class ChapterController {
             JOptionPane.showMessageDialog(null, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
+    public void findChapter() {
+        try {
+            // Solicitar el ID del capítulo mediante JOptionPane
+            String idString = JOptionPane.showInputDialog(null, "Enter chapter ID:");
+            
+            // Validar la entrada
+            if (idString != null && !idString.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idString);
+                    
+                    FindChapterUseCase.execute(id).ifPresentOrElse(
+                        chapterFound -> {
+                            JOptionPane.showMessageDialog(null,
+                                "This is the chapter:\n" + chapterFound.getChapter_title(),
+                                "Chapter Details",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
+                        },
+                        () -> JOptionPane.showMessageDialog(null,
+                            "Chapter not found.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        )
+                    );
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null,
+                        "Invalid ID format. Please enter a numeric value.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                    "No ID entered.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                "An error occurred: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
 }
