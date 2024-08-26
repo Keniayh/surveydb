@@ -11,6 +11,8 @@ import java.sql.Statement;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import com.surveydb.Chapter.domain.entity.Chapter;
 import com.surveydb.Chapter.domain.service.ChapterService;
+import java.util.Optional;
+
 
 public class ChapterRepository implements ChapterService{
     private Connection connection;
@@ -58,27 +60,28 @@ public class ChapterRepository implements ChapterService{
     }
 
     @Override
-    public Optional<Chapter> findChapterById(int id) {
-        String query = "SELECT  id, chapter_number, chapter_title, created_at, update_at, survey_id FROM chapter WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    Chapter chapter = new Chapter(
-                        resultSet.getInt("id"),
-                        resultSet.getString("chapter_number"),
-                        resultSet.getString("chapter_title"),
-                        resultSet.getTimestamp("created_at"),
-                        resultSet.getTimestamp("update_at"),
-                        resultSet.getInt("survey_id")
-                    );
-                    return Optional.of(chapter);
-                }
+public Optional<Chapter> findChapterById(int id) {
+    String query = "SELECT id, chapter_number, chapter_title, created_at, update_at, survey_id FROM chapter WHERE id = ?";
+    try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, id);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                Chapter chapter = new Chapter(
+                    resultSet.getInt("id"),
+                    resultSet.getTimestamp("created_at"),
+                    resultSet.getInt("survey_id"),
+                    resultSet.getTimestamp("update_at"),
+                    resultSet.getString("chapter_number"),
+                    resultSet.getString("chapter_title")
+                );
+                return Optional.of(chapter);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return Optional.empty();
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return Optional.empty();  // Retorna un Optional vacío si no se encuentra el capítulo
+}
+
     
 }

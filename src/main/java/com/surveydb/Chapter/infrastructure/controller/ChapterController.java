@@ -1,6 +1,7 @@
 package com.surveydb.Chapter.infrastructure.controller;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import com.surveydb.Chapter.application.CreateChapterUseCase;
 import com.surveydb.Chapter.application.FindChapterUseCase;
@@ -11,10 +12,12 @@ import com.surveydb.Chapter.infrastructure.repository.ChapterRepository;
 public class ChapterController {
     private ChapterService chapterService;
     private CreateChapterUseCase createChapterUseCase;
+    private FindChapterUseCase findChapterUseCase;
 
     public ChapterController() {
         this.chapterService = new ChapterRepository();
         this.createChapterUseCase = new CreateChapterUseCase(chapterService);
+        this.findChapterUseCase = new FindChapterUseCase(chapterService);
     }
 
     public void addChapter() {
@@ -52,13 +55,13 @@ public class ChapterController {
         try {
             // Solicitar el ID del capítulo mediante JOptionPane
             String idString = JOptionPane.showInputDialog(null, "Enter chapter ID:");
-            
             // Validar la entrada
             if (idString != null && !idString.trim().isEmpty()) {
                 try {
                     int id = Integer.parseInt(idString);
                     
-                    FindChapterUseCase.execute(id).ifPresentOrElse(
+                    // Llamar al método execute a través de la instancia findChapterUseCase
+                    findChapterUseCase.execute(id).ifPresentOrElse(
                         chapterFound -> {
                             JOptionPane.showMessageDialog(null,
                                 "This is the chapter:\n" + chapterFound.getChapter_title(),
@@ -94,5 +97,6 @@ public class ChapterController {
             );
         }
     }
+    
 
 }
