@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 
 public class Main {
     public static void main(String[] args) {
+        ChapterController consoleAdapter = new ChapterController();
+        consoleAdapter.updateChapter();
+
         SwingUtilities.invokeLater(() -> {
             // Crear y mostrar la ventana de login
             JFrame loginFrame = new JFrame("Login");
