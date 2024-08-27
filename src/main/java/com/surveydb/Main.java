@@ -1,8 +1,6 @@
 package com.surveydb;
 
 import javax.swing.*;
-import java.util.Optional;
-import com.surveydb.Chapter.application.FindChapterUseCase;
 import com.surveydb.Chapter.infrastructure.controller.ChapterController;
 
 import java.awt.*;

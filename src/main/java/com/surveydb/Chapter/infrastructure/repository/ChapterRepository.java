@@ -95,16 +95,11 @@ public class ChapterRepository implements ChapterService{
             statement.setInt(6, chapter.getId());
 
             int affectedRows = statement.executeUpdate();
-    
-            // Verifica si se insertó la fila y recupera la clave generada
             if (affectedRows > 0) {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        chapter.setId(generatedKeys.getInt(1));  // Asigna el ID generado al objeto Chapter
-                    }
-                }
+                System.out.println("Chapter updated successfully!");
+            } else {
+                System.out.println("No chapter was found with the provided ID.");
             }
-            System.out.println("Chapter created successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
