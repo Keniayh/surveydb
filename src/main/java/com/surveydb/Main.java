@@ -2,6 +2,8 @@ package com.surveydb;
 
 import javax.swing.*;
 import com.surveydb.Chapter.infrastructure.controller.ChapterController;
+import com.surveydb.Survey.infrastructure.controller.SurveyController;
+// import com.surveydb.Catalogs.infrastructure.controller.CatalogsController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,9 +11,6 @@ import java.awt.event.ActionListener;
 
 public class Main {
     public static void main(String[] args) {
-        ChapterController consoleAdapter = new ChapterController();
-        consoleAdapter.updateChapter();
-
         SwingUtilities.invokeLater(() -> {
             // Crear y mostrar la ventana de login
             JFrame loginFrame = new JFrame("Login");
@@ -48,9 +47,9 @@ public class Main {
                         loginFrame.dispose();
                         showMainMenu(username);
                     } else {
-                        JOptionPane.showMessageDialog(loginFrame, 
-                            "Invalid username or password.", 
-                            "Login Error", 
+                        JOptionPane.showMessageDialog(loginFrame,
+                            "Invalid username or password.",
+                            "Login Error",
                             JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -60,7 +59,7 @@ public class Main {
 
     private static boolean authenticate(String username, String password) {
         // Lógica de autenticación básica (debería ser reemplazada con lógica real)
-        return "admin".equals(username) && "adminpass".equals(password) || 
+        return "admin".equals(username) && "adminpass".equals(password) ||
                "user".equals(username) && "userpass".equals(password);
     }
 
@@ -113,10 +112,10 @@ public class Main {
             exitButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int confirm = JOptionPane.showConfirmDialog(menuFrame, 
-                        "Are you sure you want to exit?", 
-                        "Exit Confirmation", 
-                        JOptionPane.YES_NO_OPTION, 
+                    int confirm = JOptionPane.showConfirmDialog(menuFrame,
+                        "Are you sure you want to exit?",
+                        "Exit Confirmation",
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
                     if (confirm == JOptionPane.YES_OPTION) {
                         System.exit(0);
@@ -127,91 +126,298 @@ public class Main {
     }
 
     private static void handleAdminActions() {
-        JFrame adminFrame = new JFrame("Admin Actions");
-        adminFrame.setSize(400, 300);
-        adminFrame.setLayout(new GridLayout(3, 1, 10, 10));
+        SwingUtilities.invokeLater(() -> {
+            JFrame adminFrame = new JFrame("Admin Actions");
+            adminFrame.setSize(600, 400);
+            adminFrame.setLayout(new BorderLayout());
+            adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JButton addChapterButton = new JButton("Add Chapter");
-        JButton viewReportsButton = new JButton("View Reports");
-        JButton backButton = new JButton("Back to Main Menu");
+            // Crear el panel principal
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(5, 1, 10, 10));
 
-        adminFrame.add(addChapterButton);
-        adminFrame.add(viewReportsButton);
-        adminFrame.add(backButton);
+            // Crear y añadir el mensaje de bienvenida
+            JTextArea welcomeText = new JTextArea(
+                "Welcome to the Admin Actions Menu!\n" +
+                "Here you can manage the following tables:\n" +
+                "1. Chapter\n" +
+                "2. Survey\n" +
+                "3. Catalogs\n" +
+                "4. [Add any other tables here]\n" +
+                "Select an option to proceed."
+            );
+            welcomeText.setEditable(false);
+            welcomeText.setMargin(new Insets(10, 10, 10, 10));
+            panel.add(welcomeText);
 
-        addChapterButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ChapterController chapterController = new ChapterController();
-                chapterController.addChapter();
-            }
+            // Crear botones para las acciones administrativas
+            JButton chapterButton = new JButton("Manage Chapter");
+            JButton surveyButton = new JButton("Manage Survey");
+            JButton catalogsButton = new JButton("Manage Catalogs");
+            JButton backButton = new JButton("Back to Main Menu");
+
+            // Añadir botones al panel
+            panel.add(chapterButton);
+            panel.add(surveyButton);
+            panel.add(catalogsButton);
+            panel.add(backButton);
+
+            // Añadir panel al frame
+            adminFrame.add(panel, BorderLayout.CENTER);
+            adminFrame.setVisible(true);
+
+            // Configurar acciones para los botones
+            chapterButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handleChapterActions();
+                }
+            });
+
+            surveyButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handleSurveyActions();
+                }
+            });
+
+            catalogsButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handleCatalogsActions();
+                }
+            });
+
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    adminFrame.dispose();
+                    showMainMenu("admin"); // Regresar al menú principal
+                }
+            });
         });
+    }
 
-        viewReportsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(adminFrame, 
-                    "View Reports functionality is not implemented yet.", 
-                    "Not Implemented", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            }
+    private static void handleChapterActions() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame chapterFrame = new JFrame("Manage Chapter");
+            chapterFrame.setSize(400, 300);
+            chapterFrame.setLayout(new GridLayout(6, 1, 10, 10));
+            chapterFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JButton addButton = new JButton("Add Chapter");
+            JButton searchButton = new JButton("Search Chapter");
+            JButton updateButton = new JButton("Update Chapter");
+            JButton deleteButton = new JButton("Delete Chapter");
+            JButton viewButton = new JButton("View All Chapters");
+            JButton backButton = new JButton("Back to Admin Menu");
+
+            chapterFrame.add(addButton);
+            chapterFrame.add(searchButton);
+            chapterFrame.add(updateButton);
+            chapterFrame.add(deleteButton);
+            chapterFrame.add(viewButton);
+            chapterFrame.add(backButton);
+
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController chapterController = new ChapterController();
+                    chapterController.addChapter();
+                }
+            });
+
+            searchButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController chapterController = new ChapterController();
+                    chapterController.findChapter();
+                }
+            });
+
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController chapterController = new ChapterController();
+                    chapterController.updateChapter();
+                }
+            });
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController chapterController = new ChapterController();
+                    chapterController.deleteChapter();
+                }
+            });
+
+            viewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // ChapterController chapterController = new ChapterController();
+                    // chapterController.viewAllChapters();
+                }
+            });
+
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    chapterFrame.dispose();
+                    handleAdminActions(); // Regresar al menú de administración
+                }
+            });
+
+            chapterFrame.setVisible(true);
         });
+    }
 
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                adminFrame.dispose();
-                showMainMenu("admin"); // Regresar al menú principal
-            }
+    private static void handleSurveyActions() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame surveyFrame = new JFrame("Manage Survey");
+            surveyFrame.setSize(400, 300);
+            surveyFrame.setLayout(new GridLayout(6, 1, 10, 10));
+            surveyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JButton addButton = new JButton("Add Survey");
+            JButton searchButton = new JButton("Search Survey");
+            JButton updateButton = new JButton("Update Survey");
+            JButton deleteButton = new JButton("Delete Survey");
+            JButton viewButton = new JButton("View All Surveys");
+            JButton backButton = new JButton("Back to Admin Menu");
+
+            surveyFrame.add(addButton);
+            surveyFrame.add(searchButton);
+            surveyFrame.add(updateButton);
+            surveyFrame.add(deleteButton);
+            surveyFrame.add(viewButton);
+            surveyFrame.add(backButton);
+
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // SurveyController surveyController = new SurveyController();
+                    // surveyController.addSurvey();
+                }
+            });
+
+            searchButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // SurveyController surveyController = new SurveyController();
+                    // surveyController.searchSurvey();
+                }
+            });
+
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // SurveyController surveyController = new SurveyController();
+                    // surveyController.updateSurvey();
+                }
+            });
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // SurveyController surveyController = new SurveyController();
+                    // surveyController.deleteSurvey();
+                }
+            });
+
+            viewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // SurveyController surveyController = new SurveyController();
+                    // surveyController.viewAllSurveys();
+                }
+            });
+
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    surveyFrame.dispose();
+                    handleAdminActions(); // Regresar al menú de administración
+                }
+            });
+
+            surveyFrame.setVisible(true);
         });
+    }
 
-        adminFrame.setVisible(true);
+    private static void handleCatalogsActions() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame catalogsFrame = new JFrame("Manage Catalogs");
+            catalogsFrame.setSize(400, 300);
+            catalogsFrame.setLayout(new GridLayout(6, 1, 10, 10));
+            catalogsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JButton addButton = new JButton("Add Catalog");
+            JButton searchButton = new JButton("Search Catalog");
+            JButton updateButton = new JButton("Update Catalog");
+            JButton deleteButton = new JButton("Delete Catalog");
+            JButton viewButton = new JButton("View All Catalogs");
+            JButton backButton = new JButton("Back to Admin Menu");
+
+            catalogsFrame.add(addButton);
+            catalogsFrame.add(searchButton);
+            catalogsFrame.add(updateButton);
+            catalogsFrame.add(deleteButton);
+            catalogsFrame.add(viewButton);
+            catalogsFrame.add(backButton);
+
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // CatalogsController catalogsController = new CatalogsController();
+                    // catalogsController.addCatalog();
+                }
+            });
+
+            searchButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // CatalogsController catalogsController = new CatalogsController();
+                    // catalogsController.searchCatalog();
+                }
+            });
+
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // CatalogsController catalogsController = new CatalogsController();
+                    // catalogsController.updateCatalog();
+                }
+            });
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // CatalogsController catalogsController = new CatalogsController();
+                    // catalogsController.deleteCatalog();
+                }
+            });
+
+            viewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // CatalogsController catalogsController = new CatalogsController();
+                    // catalogsController.viewAllCatalogs();
+                }
+            });
+
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    catalogsFrame.dispose();
+                    handleAdminActions(); // Regresar al menú de administración
+                }
+            });
+
+            catalogsFrame.setVisible(true);
+        });
     }
 
     private static void handleUserActions() {
-        JFrame userFrame = new JFrame("User Actions");
-        userFrame.setSize(400, 300);
-        userFrame.setLayout(new GridLayout(3, 1, 10, 10));
-
-
-        JButton takeSurveyButton = new JButton("Take Survey");
-        JButton viewProfileButton = new JButton("View Profile");
-        JButton backButton = new JButton("Back to Main Menu");
-
-
-        userFrame.add(takeSurveyButton);
-        userFrame.add(viewProfileButton);
-        userFrame.add(backButton);
-
-
-        takeSurveyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(userFrame, 
-                    "Take Survey functionality is not implemented yet.", 
-                    "Not Implemented", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
-        viewProfileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(userFrame, 
-                    "View Profile functionality is not implemented yet.", 
-                    "Not Implemented", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                userFrame.dispose();
-                showMainMenu("user"); // Regresar al menú principal
-            }
-        });
-
-        userFrame.setVisible(true);
+        // Implementar la lógica para las acciones del usuario (no especificado en la pregunta)
     }
 }

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import com.surveydb.Chapter.application.CreateChapterUseCase;
+import com.surveydb.Chapter.application.DeleteChapterUseCase;
 import com.surveydb.Chapter.application.FindChapterUseCase;
 import com.surveydb.Chapter.application.UpdateChapterUseCase;
 import com.surveydb.Chapter.domain.entity.Chapter;
@@ -15,12 +16,14 @@ public class ChapterController {
     private CreateChapterUseCase createChapterUseCase;
     private FindChapterUseCase findChapterUseCase;
     private UpdateChapterUseCase updateChapterUseCase;
+    private DeleteChapterUseCase deleteChapterUseCase;
 
     public ChapterController() {
         this.chapterService = new ChapterRepository();
         this.createChapterUseCase = new CreateChapterUseCase(chapterService);
         this.findChapterUseCase = new FindChapterUseCase(chapterService);
         this.updateChapterUseCase = new UpdateChapterUseCase(chapterService);
+        this.deleteChapterUseCase = new DeleteChapterUseCase(chapterService);
     }
 
     public void addChapter() {
@@ -63,10 +66,19 @@ public class ChapterController {
                     
                     findChapterUseCase.execute(id).ifPresentOrElse(
                         chapterFound -> {
+                            
+                            StringBuilder chapterDetails = new StringBuilder();
+                            chapterDetails.append("Chapter ID: ").append(chapterFound.getId()).append("\n");
+                            chapterDetails.append("Created At: ").append(chapterFound.getCreated_at()).append("\n");
+                            chapterDetails.append("Survey ID: ").append(chapterFound.getSurvey_id()).append("\n");
+                            chapterDetails.append("Updated At: ").append(chapterFound.getUpdated_at()).append("\n");
+                            chapterDetails.append("Chapter Number: ").append(chapterFound.getChapter_number()).append("\n");
+                            chapterDetails.append("Chapter Title: ").append(chapterFound.getChapter_title()).append("\n");
+                            
                             JOptionPane.showMessageDialog(null,
-                                "This is the chapter:\n" + chapterFound.getChapter_title(), // tengo que pedir toda la info!
-                                "Chapter Details",
-                                JOptionPane.INFORMATION_MESSAGE
+                            chapterDetails.toString(),
+                            "Chapter Details",
+                            JOptionPane.INFORMATION_MESSAGE
                             );
                         },
                         () -> JOptionPane.showMessageDialog(null,
@@ -117,7 +129,7 @@ public class ChapterController {
             // Crear instancia de Chapter y establecer valores
             Chapter chapter = new Chapter();
             chapter.setId(id);
-            chapter.setCreated_at(new Timestamp(System.currentTimeMillis()));  // Puedes cambiar esto si necesitas una fecha específica
+            chapter.setCreated_at(new Timestamp(System.currentTimeMillis()));  
             chapter.setUpdated_at(new Timestamp(System.currentTimeMillis()));
             chapter.setSurvey_id(surveyId);
             chapter.setChapter_number(chapterNumber);
@@ -135,5 +147,20 @@ public class ChapterController {
         }
     }
     
+    public void deleteChapter() {
+        try {
+            String idStr = JOptionPane.showInputDialog("Enter chapter ID to delete:");
 
+            int id = Integer.parseInt(idStr);
+
+            deleteChapterUseCase.execute(id);
+            
+            JOptionPane.showMessageDialog(null, "Chapter deleted successfully!");
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid input for chapter ID. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

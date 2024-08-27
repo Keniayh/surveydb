@@ -7,4 +7,5 @@ public interface ChapterService {
     void createChapter(Chapter chapter);
     Optional<Chapter> findChapterById(int id);
     void updateChapter(Chapter chapter);
+    void deleteChapterById(int id);
 }

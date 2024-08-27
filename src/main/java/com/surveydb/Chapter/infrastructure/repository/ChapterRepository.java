@@ -104,5 +104,30 @@ public class ChapterRepository implements ChapterService{
             e.printStackTrace();
         }
     }
+    @Override
+    public void deleteChapterById(int id) {
+        String deleteQuestionsSql = "DELETE FROM questions WHERE chapter_id = ?";
+        String deleteChapterSql = "DELETE FROM chapter WHERE id = ?";
+        
+        try (PreparedStatement deleteQuestionsStmt = connection.prepareStatement(deleteQuestionsSql);
+                PreparedStatement deleteChapterStmt = connection.prepareStatement(deleteChapterSql)) {
+    
+            // Eliminar preguntas relacionadas
+            deleteQuestionsStmt.setInt(1, id);
+            deleteQuestionsStmt.executeUpdate();
+            
+            // Eliminar capítulo
+            deleteChapterStmt.setInt(1, id);
+            int affectedRows = deleteChapterStmt.executeUpdate();
+    
+            if (affectedRows > 0) {
+                System.out.println("Chapter and related questions deleted successfully!");
+            } else {
+                System.out.println("No chapter was found with the provided ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
 }
