@@ -60,7 +60,7 @@ public class Main {
     private static boolean authenticate(String username, String password) {
         // Lógica de autenticación básica (debería ser reemplazada con lógica real)
         return "admin".equals(username) && "adminpass".equals(password) ||
-               "user".equals(username) && "userpass".equals(password);
+                "user".equals(username) && "userpass".equals(password);
     }
 
     private static void showMainMenu(String username) {
@@ -254,8 +254,8 @@ public class Main {
             viewButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // ChapterController chapterController = new ChapterController();
-                    // chapterController.viewAllChapters();
+                    ChapterController chapterController = new ChapterController();
+                    chapterController.viewAllChapter();
                 }
             });
 

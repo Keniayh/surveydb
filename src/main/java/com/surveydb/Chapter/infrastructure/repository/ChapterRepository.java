@@ -11,6 +11,9 @@ import java.sql.Statement;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import com.surveydb.Chapter.domain.entity.Chapter;
 import com.surveydb.Chapter.domain.service.ChapterService;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -129,5 +132,35 @@ public class ChapterRepository implements ChapterService{
             e.printStackTrace();
         }
     }
+    @Override
+    public List<Chapter> getAllChapter() {
+        List<Chapter> chapters = new ArrayList<>();
+        String query = "SELECT * FROM chapter";
+        
+        try (PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+            
+            while (resultSet.next()) {
+                // Crear una nueva instancia de Chapter
+                Chapter chapter = new Chapter();
+                
+                // Mapear los resultados de la consulta a los campos del objeto Chapter
+                chapter.setCreated_at(resultSet.getTimestamp("created_at"));
+                chapter.setSurvey_id(resultSet.getInt("survey_id"));
+                chapter.setUpdated_at(resultSet.getTimestamp("update_at"));
+                chapter.setChapter_number(resultSet.getString("chapter_number"));
+                chapter.setChapter_title(resultSet.getString("chapter_title"));
+                chapter.setId(resultSet.getInt("id"));
+                
+                // Añadir el objeto Chapter a la lista
+                chapters.add(chapter);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejar la excepción de acuerdo a tus necesidades
+        }
+        
+        return chapters;
+    }
+    
     
 }

@@ -1,6 +1,8 @@
 package com.surveydb.Chapter.domain.service;
 
+import java.util.List;
 import java.util.Optional;
+
 import com.surveydb.Chapter.domain.entity.Chapter;
 
 public interface ChapterService {
@@ -8,4 +10,5 @@ public interface ChapterService {
     Optional<Chapter> findChapterById(int id);
     void updateChapter(Chapter chapter);
     void deleteChapterById(int id);
+    List<Chapter> getAllChapter();
 }

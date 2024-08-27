@@ -1,11 +1,13 @@
 package com.surveydb.Chapter.infrastructure.controller;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import com.surveydb.Chapter.application.CreateChapterUseCase;
 import com.surveydb.Chapter.application.DeleteChapterUseCase;
 import com.surveydb.Chapter.application.FindChapterUseCase;
+import com.surveydb.Chapter.application.ShowAllChapterUseCase;
 import com.surveydb.Chapter.application.UpdateChapterUseCase;
 import com.surveydb.Chapter.domain.entity.Chapter;
 import com.surveydb.Chapter.domain.service.ChapterService;
@@ -17,6 +19,7 @@ public class ChapterController {
     private FindChapterUseCase findChapterUseCase;
     private UpdateChapterUseCase updateChapterUseCase;
     private DeleteChapterUseCase deleteChapterUseCase;
+    private ShowAllChapterUseCase showAllChapterUseCase;
 
     public ChapterController() {
         this.chapterService = new ChapterRepository();
@@ -24,6 +27,7 @@ public class ChapterController {
         this.findChapterUseCase = new FindChapterUseCase(chapterService);
         this.updateChapterUseCase = new UpdateChapterUseCase(chapterService);
         this.deleteChapterUseCase = new DeleteChapterUseCase(chapterService);
+        this.showAllChapterUseCase = new ShowAllChapterUseCase(chapterService);
     }
 
     public void addChapter() {
@@ -161,6 +165,35 @@ public class ChapterController {
             JOptionPane.showMessageDialog(null, "Invalid input for chapter ID. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void viewAllChapter() {
+        try {
+            // Ejecuta el caso de uso para obtener todos los capítulos
+            List<Chapter> chapters = showAllChapterUseCase.execute();
+
+            // Verifica si hay capítulos
+            if (chapters.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No chapters found.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Construye un StringBuilder para la información de los capítulos
+                StringBuilder chaptersInfo = new StringBuilder();
+                for (Chapter chapter : chapters) {
+                    chaptersInfo.append("ID: ").append(chapter.getId())
+                            .append(", Number: ").append(chapter.getChapter_number())
+                            .append(", Title: ").append(chapter.getChapter_title())
+                            .append(", Survey ID: ").append(chapter.getSurvey_id())
+                            .append(", Created At: ").append(chapter.getCreated_at())
+                            .append(", Updated At: ").append(chapter.getUpdated_at())
+                            .append("\n");
+                }
+                // Muestra la información de los capítulos en un cuadro de diálogo
+                JOptionPane.showMessageDialog(null, chaptersInfo.toString(), "All Chapters", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) {
+            // Muestra un mensaje de error si ocurre una excepción
+            JOptionPane.showMessageDialog(null, "An error occurred while fetching chapters: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
