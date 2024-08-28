@@ -34,11 +34,7 @@ public class AdminUI {
             // Crear y añadir el mensaje de bienvenida
             JTextArea welcomeText = new JTextArea(
                 "Welcome to the Admin Actions Menu!\n" +
-                "Here you can manage the following tables:\n" +
-                "1. Chapter\n" +
-                "2. Survey\n" +
-                "3. Catalogs\n" +
-                "4. [Add any other tables here]\n" +
+                "Here you can manage the following tables:\n"+
                 "Select an option to proceed."
             );
             welcomeText.setEditable(false);
@@ -68,7 +64,6 @@ public class AdminUI {
                     handleChapterActions();
                 }
             });
-
             // Puedes añadir funcionalidades adicionales para otros botones aquí.
 
             backButton.addActionListener(new ActionListener() {
@@ -105,13 +100,42 @@ public class AdminUI {
             addButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ChapterController chapterController = new ChapterController();
-                    chapterController.addChapter();
+                    ChapterController consoleAdapter = new ChapterController();
+                    consoleAdapter.addChapter();
                 }
             });
 
-            // Configura los otros botones de manera similar
-            // ...
+            searchButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController consoleAdapter = new ChapterController();
+                    consoleAdapter.findChapter();
+                }
+            });
+
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController consoleAdapter = new ChapterController();
+                    consoleAdapter.updateChapter();
+                }
+            });
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController consoleAdapter = new ChapterController();
+                    consoleAdapter.deleteChapter();
+                }
+            });
+
+            viewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ChapterController consoleAdapter = new ChapterController();
+                    consoleAdapter.viewAllChapter();
+                }
+            });
 
             backButton.addActionListener(new ActionListener() {
                 @Override
