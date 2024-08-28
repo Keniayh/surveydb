@@ -1,4 +1,4 @@
-package com.surveydb;
+package com.surveydb.UI;
 
 import javax.swing.*;
 
@@ -9,9 +9,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Main {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class LoginIU {
+    SwingUtilities.invokeLater(()->
+    {
             JFrame loginFrame = new JFrame("Login");
             loginFrame.setSize(400, 200);
             loginFrame.setLayout(new GridLayout(3, 2, 10, 10));
@@ -54,7 +61,6 @@ public class Main {
                 }
             });
         });
-    }
 
     private static boolean authenticate(String username, String password) {
         return "admin".equals(username) && "adminpass".equals(password) ||
